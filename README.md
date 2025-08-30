@@ -26,4 +26,4 @@ Virtual env: WSL2 + Anaconda3
 3. Nvidia Container
 4. Jenkins
 5. DB
-6. 
+6. git
