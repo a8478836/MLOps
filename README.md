@@ -22,7 +22,7 @@ Virtual env: WSL2 + Anaconda3
 
 # Tools
 1. Pytorch (dev. platform)
-2. Kubernetes (container orchestration)
+2. Kubernetes (container orchestration): v1.30
 3. Nvidia Container
 4. Jenkins
 5. DB
