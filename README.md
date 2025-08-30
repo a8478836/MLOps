@@ -1,5 +1,5 @@
 # MLOps
-Ready for MLOps
+Ready for MLOps(feat. LLM, VLM etc.)
 
 
 #
