@@ -22,10 +22,10 @@ Attention의 종류는 bahdanau attention, dot-product attention, scaled dot-pro
 
 ### Scaled Dot-Product attention
 Transformer에서 가장 기본이 되는 attention이며 각 Query가 key를 얼마나 주목할지 계산하고, value를 가중합해서 context 벡터를 생성  
-> Query: 질문어, 다른 단어와 얼마나 관련이 있어야하는지 -> 내가 궁금한 내용
-> Key: 특징, 어떤 특징을 가지고 있는지에 대한 값 -> 도서관 책 제목
-> Value: 실제 정보, 실제 의미 -> 책 내용
-즉, Q가 각 K와 얼마나 비슷한지 확인 -> V
+> Query: 질문어, 다른 단어와 얼마나 관련이 있어야하는지 -> 내가 궁금한 내용  
+> Key: 특징, 어떤 특징을 가지고 있는지에 대한 값 -> 도서관 책 제목  
+> Value: 실제 정보, 실제 의미 -> 책 내용  
+즉, Q가 각 K와 얼마나 비슷한지 확인 -> V  
 
 
 ### Q K V 구하기
