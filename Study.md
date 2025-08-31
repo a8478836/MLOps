@@ -27,18 +27,44 @@ Transformer에서 가장 기본이 되는 attention이며 각 Query가 key를 �
 > Value: 실제 정보, 실제 의미 -> 책 내용  
 즉, Q가 각 K와 얼마나 비슷한지 확인 -> V  
 
+<Q K V 구하기>
+단어 개수 : n
+임베딩 차원 : k
+Q: Query 벡터 행렬 [n, d_k]  
+K: Key 벡터 행렬 [n, d_k]  
+V: Value 벡터 행렬 [n, d_v]  
 
-### Q K V 구하기
-위의 정보를 구하기 위해서 Q(Query), K(Key), V(Value) 벡터를 구해야 함  
+Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼마나 주목하는지 확률로 변환한 값에 weight를 곱하면 V이고, 이 V 값이 최종 context 벡터 
+
+<img width="381" height="74" alt="image" src="https://github.com/user-attachments/assets/a180ac5b-cb50-47ed-951f-1a5789b565be" />
+* QK<sup>T</sup>에서 K의 전치 행렬을 곱하는 이유는 Q와 K의 유사도를 위해서 내적을 해야하는데, 내적을 할때 shape를 맞추기 위함임
+  
+
+### Self-Attention
+같은 시퀀스 내 단어끼리 서로를 바라보며 context를 학습하는데, 입력 문장만으로 각 단어의 문맥 정보를 파악  
+<ins>즉 self-attention의 내부 계산 방식이 scaled dot-product attention 방법임</ins>  
+한 문장에서 위의 정보를 구하기 위해서 Q(Query), K(Key), V(Value) 벡터를 구해야 함  
+
+<img width="569" height="38" alt="image" src="https://github.com/user-attachments/assets/a5b6679b-379e-44da-bc36-313bb3d6f3ba" />
+
 예를들어
 > 'I love coffee'
 
-가 있을 때
+라는 한 문장이 있을 때
 단어 개수 : n -> 3
 임베딩 차원(연관성을 담은 벡터 공간): d -> 4 (가정)
 Q: [3, d_k] → 3단어, d_k 차원  
 K: [3, d_k] → 3단어, d_k 차원  
 V: [3, d_v] → 3단어, d_v 차원  
+
+Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼마나 주목하는지 확률로 변환한 값에 weight를 곱하면 V이고, 이 V 값이 최종 context 벡터 
+
+### Multi-head attention
+여러 개의 self-attention을 병렬러 수행함으로써 다양한 관점에서 context를 학습. 각 head가 Q, K, V를 서로 다른 가중치로 변환  
+- 1 head: 단일 관점에서 단어 관계 학습
+- n head: 서로 다른 문맥/패턴을 동시에 학습
+
+<img width="450" height="73" alt="image" src="https://github.com/user-attachments/assets/d6ce5419-1fd6-47f1-8fbe-d288772cb2ca" />
 
 
 
