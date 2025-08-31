@@ -3,7 +3,7 @@
 # MLOps
 Ready for MLOps(feat. LLM, VLM etc.)
 
-On-premise에서 kubernetes기반의 간단한 챗봇 구현하기
+On-premise의 kubernetes에서 API 기반의 간단한 챗봇 구현하기
 
 ## 목적
 On-premise 환경에서 Kubernetes를 구성하고, Nvidia Container를 사용하여 시중 제품들과 비슷하게 챗봇을 구현해본다.
@@ -27,3 +27,5 @@ Virtual env: WSL2 + Anaconda3
 4. Jenkins
 5. DB
 6. git
+7. Penpot (architecture)
+8. Grafana (visualization)
