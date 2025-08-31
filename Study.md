@@ -36,7 +36,7 @@ V: Value 벡터 행렬 [n, d_v]
 
 Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼마나 주목하는지 확률로 변환한 값에 weight를 곱하면 V이고, 이 V 값이 최종 context 벡터 
 
-<img width="381" height="74" alt="image" src="https://github.com/user-attachments/assets/a180ac5b-cb50-47ed-951f-1a5789b565be" />
+<img width="381" height="74" alt="image" src="https://github.com/user-attachments/assets/a180ac5b-cb50-47ed-951f-1a5789b565be" />  
 * QK<sup>T</sup>에서 K의 전치 행렬을 곱하는 이유는 Q와 K의 유사도를 위해서 내적을 해야하는데, 내적을 할때 shape를 맞추기 위함임
   
 
@@ -45,7 +45,7 @@ Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼
 <ins>즉 self-attention의 내부 계산 방식이 scaled dot-product attention 방법임</ins>  
 한 문장에서 위의 정보를 구하기 위해서 Q(Query), K(Key), V(Value) 벡터를 구해야 함  
 
-<img width="569" height="38" alt="image" src="https://github.com/user-attachments/assets/a5b6679b-379e-44da-bc36-313bb3d6f3ba" />
+<img width="569" height="38" alt="image" src="https://github.com/user-attachments/assets/a5b6679b-379e-44da-bc36-313bb3d6f3ba" />  
 
 예를들어
 > 'I love coffee'
@@ -64,7 +64,7 @@ Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼
 - 1 head: 단일 관점에서 단어 관계 학습
 - n head: 서로 다른 문맥/패턴을 동시에 학습
 
-<img width="450" height="73" alt="image" src="https://github.com/user-attachments/assets/d6ce5419-1fd6-47f1-8fbe-d288772cb2ca" />
+<img width="450" height="73" alt="image" src="https://github.com/user-attachments/assets/d6ce5419-1fd6-47f1-8fbe-d288772cb2ca" />  
 
 
 
