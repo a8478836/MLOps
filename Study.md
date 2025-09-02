@@ -34,7 +34,7 @@ Q: Query 벡터 행렬 [n, d_k]
 K: Key 벡터 행렬 [n, d_k]  
 V: Value 벡터 행렬 [n, d_v]  
 
-Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼마나 주목하는지 확률로 변환한 값에 weight를 곱하면 V이고, 이 V 값이 최종 context 벡터이며 V 값을 softmax(Q*k_upperT)*V 하면 attention score를 구할 수 있음 
+Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼마나 주목하는지 확률로 변환한 값에 weight를 곱하면 V이고, 이 V 값이 최종 context 벡터이며 V 값을 softmax(Q*k_upper(T) / root(d_k))*V 하면 attention score를 구할 수 있음 
 
 <img width="381" height="74" alt="image" src="https://github.com/user-attachments/assets/a180ac5b-cb50-47ed-951f-1a5789b565be" />  
 * QK<sup>T</sup>에서 K의 전치 행렬을 곱하는 이유는 Q와 K의 유사도를 위해서 내적을 해야하는데, 내적을 할때 shape를 맞추기 위함임
@@ -52,7 +52,7 @@ Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼
 
 라는 한 문장이 있을 때
 단어 개수 : n -> 3
-임베딩 차원(연관성을 담은 벡터 공간): d -> 4 (가정)
+임베딩 차원(연관성을 담은 벡터 공간): d -> 4 (가정)  
 Q: [3, d_k] → 3단어, d_k 차원  
 K: [3, d_k] → 3단어, d_k 차원  
 V: [3, d_v] → 3단어, d_v 차원  
