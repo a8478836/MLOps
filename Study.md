@@ -6,7 +6,7 @@
 > Gradient vanishing/exploding: vanishing, exploding는 역전파 시 기울기가 사라지거나 무한대로 커지는 현상  
 
 Transformer 아키텍처는 attention 이라는 메커니즘을 도입하면서 기존의 모델들을이 가진 문제를 해결할 수 있음  
-왜냐하면 transformer는 병렬처리가 가능하도록 개발되었으며, RNN/LSTM은 순차적으로 토큰들이 연결되는 반면에, transformer는 모든 토큰들이 서로를 한번에 연결하기 때
+왜냐하면 transformer는 병렬처리가 가능하도록 개발되었으며, RNN/LSTM은 순차적으로 토큰들이 연결되는 반면에, transformer는 모든 토큰들이 서로를 한번에 연결하기 때문
 
 ## 원리
 ### Attention
@@ -34,7 +34,7 @@ Q: Query 벡터 행렬 [n, d_k]
 K: Key 벡터 행렬 [n, d_k]  
 V: Value 벡터 행렬 [n, d_v]  
 
-Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼마나 주목하는지 확률로 변환한 값에 weight를 곱하면 V이고, 이 V 값이 최종 context 벡터 
+Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼마나 주목하는지 확률로 변환한 값에 weight를 곱하면 V이고, 이 V 값이 최종 context 벡터이며 V 값을 softmax(Q*k_upperT)*V 하면 attention score를 구할 수 있음 
 
 <img width="381" height="74" alt="image" src="https://github.com/user-attachments/assets/a180ac5b-cb50-47ed-951f-1a5789b565be" />  
 * QK<sup>T</sup>에서 K의 전치 행렬을 곱하는 이유는 Q와 K의 유사도를 위해서 내적을 해야하는데, 내적을 할때 shape를 맞추기 위함임
@@ -58,13 +58,26 @@ K: [3, d_k] → 3단어, d_k 차원
 V: [3, d_v] → 3단어, d_v 차원  
 
 Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼마나 주목하는지 확률로 변환한 값에 weight를 곱하면 V이고, 이 V 값이 최종 context 벡터 
+예를 들어 한개의 물체를 한개의 카메라만 사용하여 촬영 -> 한 면에만 집중!!!  
 
 ### Multi-head attention
-여러 개의 self-attention을 병렬러 수행함으로써 다양한 관점에서 context를 학습. 각 head가 Q, K, V를 서로 다른 가중치로 변환  
-- 1 head: 단일 관점에서 단어 관계 학습
-- n head: 서로 다른 문맥/패턴을 동시에 학습
+여러 개의 self-attention을 병렬로 수행함으로써 다양한 관점에서 context를 학습. 각 head가 Q, K, V를 서로 다른 가중치로 변환  
+- 1 head: 단일 관점에서 단어 관계 학습 = self-attention
+- n head: 서로 다른 문맥/패턴을 동시에 학습 = multi-head attention
+- 512개의 차원을 8 head면 1 head당 64개의 차원을 가짐  
+
+self-attention하고 차이는 multi-head attention은 한 물체를 n개의 카메라로 다방면에서 촬영하는 것 -> 입체적으로 집중!!
 
 <img width="450" height="73" alt="image" src="https://github.com/user-attachments/assets/d6ce5419-1fd6-47f1-8fbe-d288772cb2ca" />  
+
+
+### Cross-attention
+Cross-attention을 Scaled dot-product attention을 서로 다른 시퀀스(예를 들어 문장)에 적용한 것  
+Q -> Decoder의 hidden state  
+K, V -> Encoder의 output에서 나옴  
+Score = 똑같은 수식  
+
+예를 들어 영어를 한국어로 번역하는 transformer가 있을 때 영어 문장을 벡터화 하면 K, V가 나오고 Decoder의 한국어로 번역된 단어 시퀀스를 Q라고 하면 Decoder가 한국어 단어를 예측할 때 영어 문장의 단어들을 K, V로 참고하여 최적의 단어를 선택하게 한다.  
 
 
 
