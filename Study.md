@@ -72,7 +72,8 @@ self-attention하고 차이는 multi-head attention은 한 물체를 n개의 카
 
 결국 n 개의 head에서 나온 값들을 concatenate -> [n, h-d_v] 한 후 w_o라는 가중치 행렬을 곱해 최종 출력을 생성  
 결국 역전파에서 attention output에 포함된 w_q, w_k, w_v, w_o가 Gradient descent로 업데이트 
-여기서 w_q, w_k, w_v는 랜덤하게 초기화
+여기서 w_q, w_k, w_v는 랜덤하게 초기화 이 후, 학습 가능한 (n x n)행렬과 학습 가능한 b_o 행렬과 함께  
+output = w_o * x + b_o 계산(우리가 알고 있는)후 loss function 계산을 통해 모든 파라미터 업데이트를 진행  
 
 ### Cross-attention
 Cross-attention을 Scaled dot-product attention을 서로 다른 시퀀스(예를 들어 문장)에 적용한 것  
