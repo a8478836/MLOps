@@ -34,7 +34,7 @@ Q: Query 벡터 행렬 [n, d_k]
 K: Key 벡터 행렬 [n, d_k]  
 V: Value 벡터 행렬 [n, d_v]  
 
-Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼마나 주목하는지 확률로 변환한 값에 weight를 곱하면 V이고, 이 V 값이 최종 context 벡터이며 V 값을 softmax(Q*k_upper(T) / root(d_k))*V 하면 attention score를 구할 수 있음 
+Q와 K를 내적한 값을 root(d_k)로 나누어 스케일하고 softmax로 얼마나 주목하는지 확률로 변환한 값이 attention weight이며 각 단어가 가진 의미 정보 벡터인 V 값을 softmax(Q*k_upper(T) / root(d_k))*V 하면 output 구할 수 있음 
 
 <img width="381" height="74" alt="image" src="https://github.com/user-attachments/assets/a180ac5b-cb50-47ed-951f-1a5789b565be" />  
 * QK<sup>T</sup>에서 K의 전치 행렬을 곱하는 이유는 Q와 K의 유사도를 위해서 내적을 해야하는데, 내적을 할때 shape를 맞추기 위함임
@@ -70,6 +70,9 @@ self-attention하고 차이는 multi-head attention은 한 물체를 n개의 카
 
 <img width="450" height="73" alt="image" src="https://github.com/user-attachments/assets/d6ce5419-1fd6-47f1-8fbe-d288772cb2ca" />  
 
+결국 n 개의 head에서 나온 값들을 concatenate -> [n, h-d_v] 한 후 w_o라는 가중치 행렬을 곱해 최종 출력을 생성  
+결국 역전파에서 attention output에 포함된 w_q, w_k, w_v, w_o가 Gradient descent로 업데이트 
+여기서 w_q, w_k, w_v는 랜덤하게 초기화
 
 ### Cross-attention
 Cross-attention을 Scaled dot-product attention을 서로 다른 시퀀스(예를 들어 문장)에 적용한 것  
