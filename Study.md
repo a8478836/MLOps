@@ -77,11 +77,16 @@ output = w_o * x + b_o 계산(우리가 알고 있는)후 loss function 계산�
 
 ### Cross-attention
 Cross-attention을 Scaled dot-product attention을 서로 다른 시퀀스(예를 들어 문장)에 적용한 것  
+Q는 디코더에서 만들고, K, V는 인코더에 쪽에서 만든다. 그래서 디코더가 무엇을 생성할지 결정할 때, 인코더가 요약해 둔 정보를 참조하는 구조!  
+
 Q -> Decoder의 hidden state  
-K, V -> Encoder의 output에서 나옴  
-Score = 똑같은 수식  
+K, V -> Encoder의 output(hidden state)에서 나옴  
+Score = self-attention과 똑같은 수식  
 
 예를 들어 영어를 한국어로 번역하는 transformer가 있을 때 영어 문장을 벡터화 하면 K, V가 나오고 Decoder의 한국어로 번역된 단어 시퀀스를 Q라고 하면 Decoder가 한국어 단어를 예측할 때 영어 문장의 단어들을 K, V로 참고하여 최적의 단어를 선택하게 한다.  
+(아래는 chatgpt를 사용한 예시)
+
+<img width="807" height="691" alt="image" src="https://github.com/user-attachments/assets/4cceb57e-64c6-4e47-8d73-e94be2f540c5" />
 
 
 
