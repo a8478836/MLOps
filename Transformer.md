@@ -1,4 +1,4 @@
-# Transformer 구조
+<img width="797" height="107" alt="image" src="https://github.com/user-attachments/assets/45a73d8e-8b2c-470c-98b9-0ebc00da697d" /># Transformer 구조
 
 ## Positional Encoding
 
@@ -28,5 +28,30 @@ Transformer 블록의 마지막에 layer norm.을 하여 토큰들을 정규화 
 (1) 수식
 
 <img width="378" height="266" alt="image" src="https://github.com/user-attachments/assets/15863714-fc63-4ba1-accc-80a13a0ccc8a" />
+
+alpha와 beta 값은 학습 가능한 파라미터로 attention output과 FFN의 출력을 안정화한다.  
+
+## Residual Connection(skip connection)
+Transformer에서 모든 블록들은 연결하는 방법  
+현재 연산에 이전의 정보(벡터)들을 저장하여 전달한다.  
+<img width="797" height="107" alt="image" src="https://github.com/user-attachments/assets/87139db3-167e-456d-92c9-aa30d7046c3c" />  
+
+단순히 값을 더해주지만 gradient 계산에 큰 기여. gradient가 직접 전달되어 vanishing gradient 막을 수 있음
+
+
+## Position-wise feed forward network(FFN)
+Transformer의 FFN에서는 두 번의 선형 변환과 1번의 비선형 활성화(ReLU 또느느 GELU)가 사용된다. 그 이유는 모델이 단어들의 선형적인 특징 뿐만 아니라 비선형적인 특징들도 학습하여 representation을 높이기 위함. 자연어, 이미지, 음성 등은 대부분 비선형적인 특징을 갖고 있음  
+
+(1) 수식
+
+<img width="403" height="60" alt="image" src="https://github.com/user-attachments/assets/621edd8a-3d56-43c0-9101-79eb2871e8a3" />  
+첫 번째 선형 변환으로 더 풍부한 표현을 학습하고, 비선형(ReLU나 GELU) 활성화를 통해 모델의 표현력(복잡한 패턴 학습)을 향상시키고, 다시 선형 변환함으로써 attention 출력과 동일한 차원으로 변환함  
+
+토큰 별록 독립적으로 적용하기 때문에 토큰의 표현력을 강화할 수 있다.  
+
+
+
+
+
 
 
