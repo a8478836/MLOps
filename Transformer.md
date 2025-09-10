@@ -40,7 +40,7 @@ Transformer에서 모든 블록들은 연결하는 방법
 
 
 ## Position-wise feed forward network(FFN)
-Transformer의 FFN에서는 두 번의 선형 변환과 1번의 비선형 활성화(ReLU 또느느 GELU)가 사용된다. 그 이유는 모델이 단어들의 선형적인 특징 뿐만 아니라 비선형적인 특징들도 학습하여 representation을 높이기 위함. 자연어, 이미지, 음성 등은 대부분 비선형적인 특징을 갖고 있음  
+Transformer의 FFN에서는 두 번의 선형 변환과 1번의 비선형 활성화(ReLU 또는 GELU)가 사용된다. 그 이유는 모델이 단어들의 선형적인 특징 뿐만 아니라 비선형적인 특징들도 학습하여 representation을 높이기 위함. 자연어, 이미지, 음성 등은 대부분 비선형적인 특징을 갖고 있음  
 
 (1) 수식
 
@@ -49,9 +49,48 @@ Transformer의 FFN에서는 두 번의 선형 변환과 1번의 비선형 활성
 
 토큰 별록 독립적으로 적용하기 때문에 토큰의 표현력을 강화할 수 있다.  
 
+## Transforemr
+Transformer는 입력 전체에 대해 병렬적으로 관계에 대한 의존성을 계산하는 신경망 구조이며, 핵심은 self-attention을 사용하여 각 토큰이 다른 토큰과 얼마나 관련이 있는지 알 수 있다. 초창기에는 Encoder-decorder 구조인 기계 번역을 위해 개발되었지만, 다양한 분야에서 응용하여 확장되었다.  
 
+위에서 공부했던 개념들을 바탕으로 보통 아래와 같이 layer를 설계한다.
+- Encoder layer (한 층):
+1. Multi-Head Self-Attention (입력에 대해)
+2. Residual 연결 + LayerNorm
+3. Position-wise Feed-Forward Network (FFN): 두 개의 선형층 사이에 비선형 (원 논문은 ReLU, 현대 모델은 GELU)
+4. Residual + LayerNorm
 
+- Decoder layer (한 층):
+1. Masked Multi-Head Self-Attention (미래 토큰을 보지 않도록 causal mask)
+2. Residual + LayerNorm
+3. Encoder-Decoder Multi-Head Attention (쿼리는 디코더, 키/값은 인코더 출력)
+4. Residual + LayerNorm
+5. FFN + Residual + LayerNorm
 
+### 학습
+1. Optimizer: Adam or AdamW
+2. Scheduler: learning rate warmup + inverse-sqrt decay
+3. Regularization: Dropout, label smoothing
+4. Tokenization: BPE, SentencePiece
+5. etc: Mixed-precision(AMP), graident accumulation, gradient clipping
+
+예시) '나는 학교에 간다' -> 512 차원, 8개의 head일 경우
+나는 -> [0.1 0.2 ... 0.1235] 512 차원 (512,)  
+학교에 -> [0.13 0.24 ... 0.3235] 512 차원 (512,)  
+간다 -> [0.89 0.72 ... 0.1285] 512 차원 (512,)  
+
+multi-head attention을 하면 Q, K, V를 생성하면  
+
+<img width="504" height="147" alt="image" src="https://github.com/user-attachments/assets/eaf03a67-dee2-4d88-b152-03288e4c2a64" />
+
+8개의 head가 있으므로 각각에서 3개의 토큰 * 64차원의 벡터를 계산  
+<img width="468" height="186" alt="image" src="https://github.com/user-attachments/assets/78bfb1d6-36e8-4f35-bb11-ba54d3cfa6d2" />  
+
+각 head에서 scaled dot-product attention 계산
+<img width="510" height="195" alt="image" src="https://github.com/user-attachments/assets/eb5f979f-c739-4a87-b4ef-e9c9a297a0e1" />  
+
+head 결과를 concatenate
+
+<img width="485" height="122" alt="image" src="https://github.com/user-attachments/assets/1fbe6a36-de25-470f-bffb-4fc73d109bb5" />
 
 
 
