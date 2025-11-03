@@ -1,4 +1,4 @@
-# Kaniko
+# Kaniko (사용X)
 Docker 없이 이미지를 빌드할 수 있는, google에서 만든 컨테이너 이미지 빌드 도구로 docker 데몬 없이 dockerfile로 이미지를 빌드할 수 있음.  
 일반적으로 dockerd를 사용하여 이미지를 빌드하지만 다음과 같은 상황에서는 dockerd를 사용할 수 없음(굳이굳이)  
 - Kubernetes Pod 안 (보안상 root 권한이 없음)
