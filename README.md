@@ -36,12 +36,16 @@ Kubernetes Cluster
 # Tools
 1. Pytorch (dev. platform)
 2. Kubernetes (container orchestration): v1.30
-3. Nvidia Container
-4. Jenkins
-5. DB
-6. git
-7. Penpot (architecture)
-8. Grafana (visualization)
+3. Helm (for charts)
+4. Kaniko (for Container Image build)
+5. Docker Private Registry
+6. Nvidia Container
+7. Jenkins(for CI)
+8. Argo CD(for CD)
+9. DB
+10. git + gitlab
+11. Penpot (architecture)
+12. Grafana (visualization)
 
 # Current Works
 
