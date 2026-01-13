@@ -72,21 +72,6 @@ Kubernetes Plugin으로 Pod Agent 생성
 
 Kaniko Agent Pod 사용
 
-### 🔐 GitLab 연동 이슈
-
-GitLab HTTPS 사설 인증서 사용
-
-Jenkins 컨테이너 내부에 CA 미신뢰 문제 발생
-
-해결 방식:
-
-GitLab CA 인증서를 ConfigMap/Secret으로 생성
-
-/usr/local/share/ca-certificates/ 경로로 mount
-
-update-ca-certificates 수행
-
-컨테이너 내부 기준으로 신뢰 체인 구성 개념 이해
 
 ### 📦 Docker Private Registry
 
