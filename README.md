@@ -1,4 +1,4 @@
-계속 수정
+계속 수정(Chat GPT 적극 활용하여 요약 중)
 
 # MLOps
 Ready for MLOps(feat. LLM, VLM etc.)
