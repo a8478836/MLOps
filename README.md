@@ -46,6 +46,9 @@ Kubernetes Cluster
 10. git + gitlab
 11. Penpot (architecture)
 12. Grafana (visualization)
+13. Vue3
+14. Tailwind
+15. Huggingface
 
 # Current Works
 
