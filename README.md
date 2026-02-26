@@ -39,16 +39,17 @@ Kubernetes Cluster
 3. Helm (for charts)
 4. Kaniko (for Container Image build)
 5. Docker Private Registry
-6. Nvidia Container
+6. Nvidia Container plugin
 7. Jenkins(for CI)
 8. Argo CD(for CD)
-9. DB
-10. git + gitlab
-11. Penpot (architecture)
-12. Grafana (visualization)
-13. Vue3
-14. Tailwind
-15. Huggingface
+9. Redis (Chat history)
+10. Chorma (embedding DB)
+11. git + gitlab
+12. Penpot (architecture)
+13. Grafana (visualization)
+14. Vue3
+15. Tailwind
+16. Huggingface
 
 # Current Works
 
@@ -117,6 +118,7 @@ GitLab Push
 | Kaniko OOM 발생 | Pod 리소스 제한 조정 |
 | Harbor 인증/신뢰 문제 | Docker Private Registry로 변경 |
 | 이미지 Push 실패 | Kaniko에서 registry 접근 설정 완료 |
+| K8S gpu 인식 불가 | containerd config.toml Nvidia runtime 추가 |
 
 ---
 
