@@ -69,7 +69,7 @@ Frontend (Vue3)
 * FastAPI
 * PyTorch
 * Huggingface
-* Redis (Chat Memory)
+* Redis (Chat Memory, Async)
 * Chroma (Vector DB)
 * LangChain (LLM Toolkit)
 * LangGraph (Workflow Orchestration)
@@ -138,25 +138,13 @@ Ingress
 ↓
 FastAPI
 ↓
-LLM 호출
-↓
-Markdown 처리
-↓
-Frontend 렌더링
-
-→ **(업데이트)** LangGraph 도입 이후
-
-Client
-↓
-Ingress
-↓
-FastAPI
-↓
-LangGraph 실행 (router → rag → prompt)
+LangGraph 실행 (router → memory_check → summarize → prompt / rag → prompt)
 ↓
 LLM Streaming (vLLM)
 ↓
 Frontend 렌더링
+↓
+Redis Memory Async 저장
 
 ---
 
@@ -170,31 +158,15 @@ LLM → Markdown → Render
 
 [User Input]
 ↓
-[Intent 분석]
-↓
-[RAG (Chroma)]
-↓
-[LLM]
-↓
-[Markdown Normalize]
-↓
-[Syntax Highlight (Shiki)]
-↓
-[Sanitize]
-↓
-[Redis Memory 저장]
-↓
-[Frontend 전달]
-
-→ **(현재 구조 개선 반영)**
-
-[User Input]
-↓
 [Router (Intent)]
 ↓
 [RAG (조건부 실행)]
 ↓
-[Prompt 구성 (Memory + Context)]
+[Memory Check]
+↓
+[Summarization (조건부)]
+↓
+[Prompt 구성 (Short-term + Summary + RAG Context)]
 ↓
 [LLM Streaming]
 ↓
@@ -209,19 +181,18 @@ LLM → Markdown → Render
 ## 목적
 
 * LLM 처리 로직을 단일 함수 → 그래프 기반 구조로 확장
-* Markdown / Rendering / Memory / RAG 분리
+* Memory / RAG / Prompt 완전 분리
 * Agent 구조 확장 기반 확보
 
 ---
 
-## Graph 구조 (업데이트)
+## Graph 구조 (최종)
 
-intent → retrieve → llm → markdown_fix → render → memory
-
-→ **현재 구현 구조 (단순화 + 안정화)**
-router → rag → prompt
-
-(조건부 분기 기반)
+router → (rag | memory_check)
+rag → prompt
+memory_check → (summarize | prompt)
+summarize → prompt
+prompt → END
 
 ---
 
@@ -229,70 +200,81 @@ router → rag → prompt
 
 ```python
 class GraphState(TypedDict, total=False):
-    messages: List[Dict]
+    messages: Annotated[List[BaseMessage], add_messages]
     context: str
     formatted_prompt: str
     route: str
     request_id: str
+    summary: str
 ```
 
 ---
 
-## Node 구성 (업데이트)
+## Node 구성 (최종)
 
-| Node     | 역할                       |
-| -------- | ------------------------ |
-| router   | 사용자 요청 분석 및 분기           |
-| retrieve | Chroma 검색                |
-| prompt   | prompt 생성 및 tokenizer 적용 |
-| memory   | Redis checkpoint 기반 저장   |
+| Node           | 역할                       |
+| -------------- | ------------------------ |
+| router         | 사용자 요청 분석 및 RAG 여부 판단    |
+| retrieve (rag) | Chroma 기반 문서 검색          |
+| memory_check   | 메시지 길이에 따른 요약 여부 판단      |
+| summarize      | 장기 대화 요약 (token 절약)      |
+| prompt         | 최종 prompt 생성 + tokenizer |
 
-→ **변경 사항**
+---
 
-* lambda / partial 제거 → async node 구조로 통일
-* 전체 pipeline async 기반으로 재구성
+# 🧠 Memory 구조 (핵심)
+
+## Short-term Memory
+
+* Redis Checkpointer 기반
+* thread_id 기준으로 메시지 자동 누적
+* LangGraph `add_messages`로 append 관리
+
+## Long-term Memory
+
+* Redis Store 기반
+* user_id 기준으로 사용자 단위 저장 가능
+* 현재는 구조만 확보, 확장 가능 상태
+
+## Memory 처리 전략
+
+* 최근 메시지 N개 유지 (trimming)
+* 일정 threshold 초과 시 summarize 실행
+* summary를 system prompt에 삽입하여 context 유지 (Running Summary)
 
 ---
 
 # 📊 현재 성숙도
 
-| 영역           | 상태              |
-| ------------ | --------------- |
-| Kubernetes   | ✅ 안정            |
-| CI           | ✅ 완료            |
-| CD           | ✅ 자동화 완료        |
-| GPU 활용       | ✅ 가능            |
-| FastAPI 서비스  | ✅ 정상            |
-| Redis Memory | ✅ Async 구조로 안정화 |
-| Chroma RAG   | ⚙ 진행 중          |
-| LangGraph    | 🚀 안정화 단계 진입    |
-| Frontend 렌더링 | ⚙ 개선 중          |
+| 영역           | 상태                      |
+| ------------ | ----------------------- |
+| Kubernetes   | ✅ 안정                    |
+| CI           | ✅ 완료                    |
+| CD           | ✅ 자동화 완료                |
+| GPU 활용       | ✅ 가능                    |
+| FastAPI 서비스  | ✅ 정상                    |
+| Redis Memory | ✅ 안정 (Short/Long 분리 완료) |
+| Chroma RAG   | ⚙ 진행 중                  |
+| LangGraph    | ✅ 안정화 완료                |
+| Streaming    | ✅ 완전 async 처리           |
+| Frontend 렌더링 | ⚙ 개선 중                  |
 
 ---
 
 # 🚨 해결한 주요 문제
 
-* Jenkins Webhook 미동작
-* Kaniko OOM
-* Registry 인증 문제
-* Kubernetes GPU 인식 문제
-* Markdown 코드블럭 깨짐
-* Syntax Highlight 문제
 * LangGraph async/sync 충돌 문제
-* lambda / partial 사용 시 async 인식 실패 문제
-* `invoke` vs `ainvoke` 실행 구조 충돌
-* Graph node 실행 TypeError
-* Redis AuthenticationError
-* RedisSearchError (index 없음)
-* RedisSaver(sync) + async graph 구조 충돌
-* 모든 LangGraph node를 **async 함수로 통일**
-* `lambda`, `partial` 제거 → async wrapper 구조 적용
-* 실행 방식 **`ainvoke`로 완전 통일**
-* `GraphState.messages`를 `dict 기반`으로 단순화
-* Redis 연동을
-  → `RedisSaver` → **`AsyncRedisSaver`로 변경**
-* FastAPI에서 **lifespan 기반 Redis 초기화 구조 적용**
-* LangGraph + Streaming + Memory 전체를 **async pipeline으로 정렬**
+* `await dict` 에러 (비동기/동기 혼용 문제)
+* HumanMessage / dict 타입 불일치 문제
+* tokenizer 입력 포맷 문제
+* Redis 인증 및 index 문제
+* RedisSaver sync → async 전환
+* Graph node TypeError
+* lambda / partial async 인식 문제
+* streaming + memory update 충돌 문제
+* message duplication / trimming 이슈
+* memory 반영 안 되는 문제 (prompt 구조 문제)
+* summarize 도입으로 context 유지 문제 해결
 
 ---
 
@@ -301,7 +283,7 @@ class GraphState(TypedDict, total=False):
 ## 1. AI 기능 확장
 
 * RAG 고도화 (Re-ranker)
-* Multi-turn memory 강화
+* Memory importance scoring
 * Tool calling (DB / API)
 
 ## 2. Agentic AI
@@ -335,4 +317,4 @@ class GraphState(TypedDict, total=False):
 # 💡 한 줄 요약
 
 CI/CD + GPU + LLM + LangGraph + Async Memory까지 결합된
-**실서비스 수준 AI 시스템 안정화 단계**
+**실서비스 수준 AI 시스템 완성 단계**
