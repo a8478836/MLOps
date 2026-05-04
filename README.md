@@ -1,4 +1,4 @@
-# 🚀 MLOps (LLM / VLM 기반 On-Premise AI 시스템)
+# 🚀 LLM 기반 소규모 챗봇 서비스 개발
 
 ---
 
